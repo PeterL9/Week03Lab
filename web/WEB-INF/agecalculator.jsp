@@ -13,8 +13,8 @@
     </head>
     <body>
         <h1>Age Calculator</h1>
-        <form method="post" action="age">
-            Enter your age: <input type="number" min="1">
+        <form method="post" action="AgeCalculator">
+            Enter your age: <input type="number" name="age" min="1">
             <input type="submit" value="Age next birthday">
         </form>
         <p>${message}</p>
