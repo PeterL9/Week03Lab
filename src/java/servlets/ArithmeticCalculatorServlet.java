@@ -16,6 +16,7 @@ public class ArithmeticCalculatorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("result", "---");
         getServletContext().getRequestDispatcher("/WEB-INF/arithmetic.jsp")
                 .forward(request, response);
     }
@@ -27,19 +28,52 @@ public class ArithmeticCalculatorServlet extends HttpServlet {
         String first = request.getParameter("first");
         String second = request.getParameter("second");
         String submit = request.getParameter("submit");
+        String result = "";
+        int firstNum = 0;
+        int secondNum = 0;
+        int answer = 0;
+        
+        request.setAttribute("first", first);
+        request.setAttribute("second", second);
 
         if (first == null || second == null || first.equals("") || second.equals("")) {
-            request.setAttribute("result", "invalid");
-        } else if (submit.equals("+")) {
-            request.setAttribute("result", Integer.parseInt(first) + Integer.parseInt(second));
-        } else if (submit.equals("-")) {
-            request.setAttribute("result", Integer.parseInt(first) - Integer.parseInt(second));
-        } else if (submit.equals("*")) {
-            request.setAttribute("result", Integer.parseInt(first) * Integer.parseInt(second));
-        } else {
-            request.setAttribute("result", Integer.parseInt(first) % Integer.parseInt(second));
-        }
-        getServletContext().getRequestDispatcher("/WEB-INF/arithmetic.jsp")
+            result = "invalid";
+            request.setAttribute("result", result);
+            getServletContext().getRequestDispatcher("/WEB-INF/arithmetic.jsp")
                     .forward(request, response);
+            return;
+        }
+
+        Boolean areNumbers = true;
+
+        try {
+            firstNum = Integer.parseInt(first);
+            secondNum = Integer.parseInt(second);
+
+            if (submit.equals("+")) {
+                answer = firstNum + secondNum;
+            } else if (submit.equals("-")) {
+                answer = firstNum - secondNum;
+            } else if (submit.equals("*")) {
+                answer = firstNum * secondNum;
+            } else if (submit.equals("%")) {
+                answer = firstNum%secondNum;
+            }
+
+        } catch (NumberFormatException e) {
+            areNumbers = false;
+        }
+
+        if (areNumbers == false) {
+            result = "invalid";
+            request.setAttribute("result", result);
+            getServletContext().getRequestDispatcher("/WEB-INF/arithmetic.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        request.setAttribute("result", answer);
+        getServletContext().getRequestDispatcher("/WEB-INF/arithmetic.jsp")
+                .forward(request, response);
     }
 }
